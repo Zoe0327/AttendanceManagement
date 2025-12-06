@@ -1,0 +1,19 @@
+# MySQL data (Docker volume)
+docker/mysql/data/
+
+# プロジェクトレベルの一般的な除外ルール
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+/node_modules  # srcの外にある場合はここにも追加
+/storage/*
+!/storage/app/public.env.testing
+.env.testing
