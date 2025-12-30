@@ -1,0 +1,88 @@
+.user-main {
+    background-color: #F0EFF2;
+    min-height: 100vh;
+    padding-top: 1px;
+}
+
+.attendance-request {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 20px;
+    background-color: #F0EFF2;
+    border-radius: 8px;
+}
+
+.attendance-request__title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    border-left: 8px solid #000;
+    padding-left: 12px;
+}
+
+.attendance-request__tabs {
+    display: flex;
+    gap: 40px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 24px;
+}
+
+.request__tab {
+    position: relative;
+    padding-left: 40px;
+    padding-bottom: 6px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #000;
+    cursor: pointer;
+}
+
+.request__tab--active {
+    font-weight: bold;
+    color: #000;
+}
+
+.request__tab--active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 3px;
+}
+
+.attendance-request__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.attendance-request__table th,
+.attendance-request__table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #737373;
+    font-weight: bold;
+}
+
+.attendance-request__table td:first-child {
+    font-weight: bold;
+}
+
+.attendance-request__table a {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.attendance-request__table a:hover {
+    text-decoration: underline;
+}
+
+.attendance-request__table tbody tr:hover {
+    background-color: #fafafa;
+}

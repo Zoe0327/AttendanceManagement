@@ -1,0 +1,114 @@
+.attendance-detail {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+}
+
+.attendance-detail__title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    border-left: 8px solid #000;
+    padding-left: 16px;
+}
+
+.attendance-detail__content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.attendance-detail__table {
+    width: calc(100% + 60px);
+    margin-left: -30px;
+    margin-right: -30px;
+    border-collapse: collapse;
+}
+
+.date-cell {
+    display: flex;
+    gap: 32px;
+}
+
+.attendance-detail__table th,
+.attendance-detail__table td {
+    padding: 28px 40px 28px 60px;
+    border-bottom: 1px solid #E1E1E1;
+    vertical-align: middle;
+}
+
+.attendance-detail__table th {
+    width: 180px;
+    text-align: left;
+    font-weight: bold;
+    color: #737373;
+    font-size: 16px;
+}
+
+.attendance-detail__table td {
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.attendance-detail__table input[type="time"] {
+    width: 100px;
+    padding: 8px 0;
+    margin: 0 auto;
+    font-size: 14px;
+    border: 1px solid #E1E1E1;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.time-separator {
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+.break-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.attendance-detail__text {
+    width: 60%;
+    height: 20px;
+    resize: vertical;
+    padding: 24px 16px;
+    font-size: 14px;
+    border: 1px solid #E1E1E1;
+    resize: none;
+}
+
+.attendance-detail__action {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.attendance-detail__notice {
+    color: #d32f2f;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.attendance-detail__btn {
+    padding: 8px 40px;
+    font-size: 22px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.attendance-detail__btn:hover {
+    opacity: 0.85;
+}
