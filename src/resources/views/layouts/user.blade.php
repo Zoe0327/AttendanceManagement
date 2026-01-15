@@ -22,17 +22,13 @@
                         <ul class="user-header-nav">
 
                             {{-- 退勤後かどうか判定 --}}
-                            @if (isset($attendance) && $attendance->end_time !== null)
-
+                            @if (Route::is('user.attendance.index') && isset($attendance) && $attendance->end_time !== null)
                                 {{-- 退勤後 --}}
                                 <li class="user-header-nav__item">
-                                    <a class="user-header-nav__link" href="{{ route('user.attendance.list') }}">
-                                        今月の出勤一覧
-                                    </a>
+                                    <a class="user-header-nav__link" href="{{ route('user.attendance.list') }}"> 今月の出勤一覧 </a>
                                 </li>
-
                                 <li class="user-header-nav__item">
-                                    <a class="user-header-nav__link" href="{{ route('stamp_correction_request.list') }}">
+                                    <a class="user-header-nav__link" href="{{ route('user.request.index') }}">
                                         申請一覧
                                     </a>
                                 </li>
@@ -51,7 +47,7 @@
                                 </li>
 
                                 <li class="user-header-nav__item">
-                                    <a class="user-header-nav__link" href="{{ route('stamp_correction_request.list') }}">
+                                    <a class="user-header-nav__link" href="{{ route('user.request.index') }}">
                                         申請
                                     </a>
                                 </li>

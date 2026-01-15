@@ -9,12 +9,12 @@
     @yield('css')
 </head>
 <body class="auth-body">
-    <header class="header">
-        <div class="header__inner">
-            <div class="header-utilities">
+    <header class="auth-header">
+        <div class="auth-header__inner">
+            <div class="auth-header-utilities">
                 {{-- ロゴ --}}
-                <a href="{{ route('login') }}" class="header__logo">
-                    <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="header__logo-img">
+                <a href="{{ route('login') }}" class="auth-header__logo">
+                    <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="auth-header__logo-img">
                 </a>
             </div>
         </div>

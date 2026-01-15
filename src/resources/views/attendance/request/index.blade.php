@@ -23,16 +23,47 @@
                 <th>詳細</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="waiting-approval">
+        @forelse ($pendingRequests as $request)
             <tr>
                 <td>承認待ち</td>
-                <td>山田太郎</td>
-                <td>2023/06/01</td>
-                <td>遅延のため</td>
-                <td>2023/06/02</td>
-                <td><a href="#">詳細</a></td>
+                <td>{{ $request->attendance->user->name }}</td>
+                <td>{{ $request->attendance->work_date->format('Y/m/d') }}</td>
+                <td>{{ $request->reason }}</td>
+                <td>{{ $request->created_at->format('Y/m/d') }}</td>
+                <td><a href="{{ route('user.attendance.show', $request->attendance_id) }}">詳細</a></td>
             </tr>
+        @empty
+            <tr>
+                <td colspan="6">承認待ちの申請はありません</td>
+            </tr>
+        @endforelse
         </tbody>
+
+        <tbody id="approved" style="display: none;">
+            @forelse ($approvedRequests as $request)
+                <tr>
+                    <td>承認済み</td>
+                    <td>{{ $request->attendance->user->name }}</td>
+                    <td>
+                        {{ $request->attendance->work_date->format('Y/m/d') }}
+                    </td>
+                    <td>{{ $request->reason }}</td>
+                    <td>
+                        {{ $request->created_at->format('Y/m/d') }}
+                    </td>
+                    <td>
+                        <a href="{{ route('user.attendance.show', $request->attendance_id) }}">
+                            詳細
+                        </a>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6">承認済みの申請はありません</td>
+                </tr>
+            @endforelse
+            </tbody>
     </table>
 </div>
 

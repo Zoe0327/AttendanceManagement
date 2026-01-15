@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
+use App\Models\BreakTime;
 
 class AttendanceController extends Controller
 {
@@ -106,56 +107,80 @@ class AttendanceController extends Controller
     }
 
 
-    public function list()
+    public function list(Request $request)
     {
         $user = auth()->user();
 
-        $attendances = Attendance::with('breaks')
-            ->where('user_id', $user->id)
-            ->orderBy('work_date', 'desc')
+        //表示する月
+        $currentMonth = $request->input('month')
+            ? Carbon::createFromFormat('Y-m', $request->month)
+            : Carbon::now();
+
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->orderBy('work_date')
             ->get();
 
         return view('attendance.list', [
             'attendances' => $attendances,
+            'currentMonth' => $currentMonth,
         ]);
     }
 
     public function show(Attendance $attendance)
     {
         $attendance->load([
+            'user',
             'breaks',
-            'correctionRequests' => function ($query) {
-                $query->latest();
-            }
+            'correctionRequests.breakCorrections',
         ]);
 
-        $isPending = $attendance->correctionRequests
-            ->first()?->status === 'pending';
+        $latestCorrection = $attendance->correctionRequests
+            ->where('status', 0)
+            ->sortByDesc('created_at')
+            ->first();
+
+        $isPending = $latestCorrection !== null;
 
         return view('attendance.show', [
             'attendance' => $attendance,
             'breaks'     => $attendance->breaks,
             'isPending'  => $isPending,
+            'latestCorrection' => $latestCorrection
         ]);
     }
 
     public function storeCorrection(Request $request, Attendance $attendance){
         $request->validate([
-            'work_start' => ['required'],
-            'work_end' => ['required'],
-            'breaks.*.start' => ['nullable'],
-            'breaks.*.end' => ['nullable'],
-            'remark' => ['nullable', 'string'],
+            'work_start' => ['required', 'date_format:H:i'],
+            'work_end' => ['required', 'date_format:H:i'],
+            'breaks.*.start' => ['nullable', 'date_format:H:i'],
+            'breaks.*.end' => ['nullable', 'date_format:H:i'],
+            'remark' => ['required', 'string'],
         ]);
 
+        //勤務日
+        $workDate = $attendance->work_date->format('Y-m-d');
+        //出勤・退勤をdatetimeに変換
+        $requestedStart = Carbon::createFromFormat(
+            'Y-m-d H:i',
+            $workDate . ' ' . $request->work_start
+        );
+        $requestedEnd = Carbon::createFromFormat(
+            'Y-m-d H:i',
+            $workDate . ' ' . $request->work_end
+        );
         //修正申請を保存
         $correction = CorrectionRequest::create([
             'attendance_id' => $attendance->id,
             'user_id' => auth()->id(),
-            'work_start' => $request->work_start,
-            'work_end' => $request->work_end,
-            'remark' => $request->remark,
-            'status' => 'pending',//承認待ち
+            'requested_start_time' => $requestedStart,
+            'requested_end_time' => $requestedEnd,
+            'reason' => $request->remark,
+            'status' => 0,//承認待ち
         ]);
 
         //休憩修正（複数）
@@ -165,8 +190,14 @@ class AttendanceController extends Controller
             }
 
             $correction->breakCorrections()->create([
-                'start_time' => $break['start'],
-                'end_time' => $break['end'],
+                'start_time' => Carbon::createFromFormat(
+                    'Y-m-d H:i',
+                    $workDate . ' ' . $break['start']
+                ),
+                'end_time' => Carbon::createFromFormat(
+                    'Y-m-d H:i',
+                    $workDate . ' ' . $break['end']
+                ),
             ]);
         }
         return redirect()

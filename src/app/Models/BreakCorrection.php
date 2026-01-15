@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BreakTime extends Model
+class BreakCorrection extends Model
 {
-    protected $table = 'breaks';
+    use HasFactory;
 
     protected $fillable = [
-        'attendance_id',
+        'correction_request_id',
         'start_time',
         'end_time',
     ];
@@ -20,8 +20,8 @@ class BreakTime extends Model
         'end_time' => 'datetime',
     ];
 
-    public function attendance()
+    public function correctionRequest()
     {
-        return $this->belongsTo(Attendance::class);
+        return $this->belongsTo(CorrectionRequest::class);
     }
 }

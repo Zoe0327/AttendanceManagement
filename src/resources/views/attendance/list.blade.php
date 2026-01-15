@@ -8,9 +8,18 @@
     <h2 class="attendance-list__title">勤怠一覧</h2>
 
     <div class="attendance-list__month">
-        <button><img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__left-arrow-img">前月</button>
-        <span><img src="{{ asset('storage/item_images/calender.png') }}" alt="calender" class="attendance-list__month-img">2023/06</span>
-        <button>翌月<img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__right-arrow-img"></button>
+        <a href="{{ route('user.attendance.list', ['month' => $currentMonth->copy()->subMonth()->format('Y-m')]) }}">
+            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__left-arrow-img">
+            前月
+        </a>
+        <span>
+            <img src="{{ asset('storage/item_images/calender.png') }}" alt="calender" class="attendance-list__month-img">
+            {{ $currentMonth->format('Y/m') }}
+        </span>
+        <a href="{{ route('user.attendance.list', ['month' => $currentMonth->copy()->addMonth()->format('Y-m')]) }}">
+            翌月
+            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__right-arrow-img">
+        </a>
     </div>
     <table class="attendance-table">
         <thead>
@@ -27,12 +36,13 @@
             @forelse ($attendances as $attendance)
                 <tr>
                     <td>
-                        {{ \Carbon\Carbon::parse($attendance->work_date)->format('m/d(D)') }}
+                        {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d (D)') }}
                     </td>
                     <td>
                         {{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '-' }}
                     </td>
-                    <td>{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}
+                    <td>
+                        {{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}
                     </td>
                     <td>
                         {{ $attendance->total_break_time }}
