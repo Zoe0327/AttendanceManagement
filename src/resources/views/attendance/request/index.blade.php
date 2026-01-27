@@ -68,3 +68,7 @@
 </div>
 
 @endsection
+
+@section('js')
+<script src="{{ asset('js/attendance/request/tab.js') }}"></script>
+@endsection

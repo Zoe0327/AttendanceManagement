@@ -18,7 +18,6 @@ class CreateCorrectionRequestsTable extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('attendance_id');
-            $table->unsignedBigInteger('breaks_id')->nullable();
 
             $table->dateTime('requested_start_time');
             $table->dateTime('requested_end_time');
@@ -31,7 +30,6 @@ class CreateCorrectionRequestsTable extends Migration
             // 外部キー制約（余裕があれば）
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('attendance_id')->references('id')->on('attendances')->onDelete('cascade');
-            $table->foreign('breaks_id')->references('id')->on('breaks')->onDelete('set null');
         });
     }
 }

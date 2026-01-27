@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/layouts/admin.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @yield('css')
+    @yield('js')
 </head>
 <body class="admin-body">
     <header class="admin-header">

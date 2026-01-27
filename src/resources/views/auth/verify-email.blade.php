@@ -6,8 +6,8 @@
 @section('content')
 <div class="verify-email__content">
     <div class="verify-email__heading">
-        <h2>登録していただいたメールアドレスに認証メールを送付しました。</h2>
-        <h2>メール認証を完了してください</h2>
+        <p>登録していただいたメールアドレスに認証メールを送付しました。</p>
+        <p>メール認証を完了してください</p>
     </div>
 
     <div class="verify-email__form">

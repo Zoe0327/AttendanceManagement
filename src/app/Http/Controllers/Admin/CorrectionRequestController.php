@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 
@@ -40,12 +41,38 @@ class CorrectionRequestController extends Controller
 
     public function approve($id)
     {
-        $correctionRequest = CorrectionRequest::findOrFail($id);
+        DB::transaction(function () use ($id){
+            //①修正申請取得
+            $correctionRequest = CorrectionRequest::with([
+                'attendance',
+                'breakCorrections'
+            ])->findOrFail($id);
+            $attendance = $correctionRequest->attendance;
 
-        $correctionRequest->update([
-            'status' => 1,//承認済み
-            'approved_at' => now(),
-        ]);
+            //②勤怠本体を申請内容で更新
+            $attendance->update([
+                'start_time' => $correctionRequest->requested_start_time,
+                'end_time' => $correctionRequest->requested_end_time,
+                'remark' => $correctionRequest->reason,
+                'status' => 1,//承認済み
+            ]);
+
+            //③休憩は一度削除して再作成
+            $attendance->breaks()->delete();
+
+            foreach($correctionRequest->breakCorrections as $break) {
+                $attendance->breaks()->create([
+                    'start_time' => $break->start_time,
+                    'end_time' => $break->end_time,
+                ]);
+            }
+
+            //修正申請を承認済みに
+            $correctionRequest->update([
+                'status' => 1,
+                'approved_at' =>now(),
+            ]);
+        });
 
         return redirect()
             ->route('admin.request.index')

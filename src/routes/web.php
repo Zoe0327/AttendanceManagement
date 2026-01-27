@@ -14,7 +14,7 @@ use App\Http\Controllers\CorrectionRequestController;
 
 /* 勤怠 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('user.attendance.index');
     Route::post('/attendance/start', [AttendanceController::class, 'start'])->name('user.attendance.start');
     Route::post('/attendance/break/start', [AttendanceController::class, 'startBreak'])->name('user.attendance.break.start');
@@ -65,7 +65,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
 
     /* 申請承認 */
     Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminCorrectionRequestController::class, 'show'])->name('request.show');
-    Route::post('stamp_correction_request/approve/{attendance_correct_request_id}', [CorrectionRequestController::class, 'approve'])->name('request.approve');
+    Route::put('stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'approve'])->name('request.approve');
 
     /* スタッフ一覧 */
     Route::get('/staff/list', [StaffController::class, 'index'])

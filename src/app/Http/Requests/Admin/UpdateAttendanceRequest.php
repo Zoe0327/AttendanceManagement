@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Attendance;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use Carbon\Carbon;
 
-class StoreCorrectionRequest extends FormRequest
+class UpdateAttendanceRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,18 +17,16 @@ class StoreCorrectionRequest extends FormRequest
     {
         return [
             'work_start' => ['required'],
-            'work_end' => ['required'],
-            'remark' => ['required'],
+            'work_end'   => ['required'],
             'breaks.*.start' => ['nullable', 'date_format:H:i'],
-            'breaks.*.end' => ['nullable', 'date_format:H:i'],
+            'breaks.*.end'   => ['nullable', 'date_format:H:i'],
+            'remark' => ['required'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'work_start.required' => '出勤時間を入力してください',
-            'work_end.required' => '退勤時間を入力してください',
             'remark.required' => '備考を記入してください',
         ];
     }
@@ -46,9 +44,14 @@ class StoreCorrectionRequest extends FormRequest
                 $end   = Carbon::createFromFormat('H:i', $this->work_end);
             } catch (\Exception $e) {
                 $validator->errors()->add(
-                    'work_start',
+                    'work_end',
                     '出勤時間もしくは退勤時間が不適切な値です'
                 );
+                return;
+            }
+
+            // 出勤 >= 退勤
+            if ($start >= $end) {
                 $validator->errors()->add(
                     'work_end',
                     '出勤時間もしくは退勤時間が不適切な値です'
@@ -56,15 +59,6 @@ class StoreCorrectionRequest extends FormRequest
                 return;
             }
 
-            // 出勤・退勤の前後関係
-            if ($start >= $end) {
-                $validator->errors()->add(
-                    'work_end',
-                    '出勤時間もしくは退勤時間が不適切な値です'
-                );
-            }
-
-            // 休憩時間チェック
             foreach ($this->breaks ?? [] as $index => $break) {
 
                 if (empty($break['start']) || empty($break['end'])) {
@@ -86,7 +80,7 @@ class StoreCorrectionRequest extends FormRequest
                     continue;
                 }
 
-                // 休憩開始 > 終了
+                // 休憩開始 >= 終了
                 if ($breakStart >= $breakEnd) {
                     $validator->errors()->add(
                         "breaks.$index.end",
@@ -94,11 +88,11 @@ class StoreCorrectionRequest extends FormRequest
                     );
                 }
 
-                // 勤務時間外の休憩
+                // 勤務時間外
                 if ($breakStart < $start || $breakEnd > $end) {
                     $validator->errors()->add(
                         "breaks.$index.end",
-                        '休憩時間が不適切な値です'
+                        '休憩時間もしくは退勤時間が不適切な値です'
                     );
                 }
             }

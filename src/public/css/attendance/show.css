@@ -20,27 +20,47 @@
 
 .attendance-detail__table-wrapper {
     background-color: #fff;
-    padding: 30px;
+    padding: 20px 40px;
     border-radius: 10px;
 }
 
 .attendance-detail__table {
-    width: calc(100% + 60px);
-    margin-left: -30px;
-    margin-right: -30px;
+    width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+.attendance-name-cell {
+    display: block;
+    margin-left: 0;
+}
+
+.attendance-name__user {
+    padding-left: 25px;
 }
 
 .date-cell {
     display: flex;
-    gap: 32px;
+    gap: 0;
+    margin-left: 0;
+}
+
+.date-year {
+    display: inline-block;
+    width: 150px;
+    padding-left: 25px;
 }
 
 .attendance-detail__table th,
 .attendance-detail__table td {
-    padding: 28px 40px 28px 60px;
+    padding: 24px 0;
+    height: 80px;
     border-bottom: 1px solid #E1E1E1;
     vertical-align: middle;
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
 .attendance-detail__table tr:last-child th,
@@ -49,27 +69,31 @@
 }
 
 .attendance-detail__table th {
-    width: 180px;
+    width: 200px;
     text-align: left;
     font-weight: bold;
     color: #737373;
-    font-size: 16px;
+    font-size: 14px;
+    padding-left: 40px;
 }
 
 .attendance-detail__table td {
     color: #000;
     font-weight: bold;
     font-size: 16px;
+    padding-left: 60px;
 }
 
 .attendance-detail__table input[type="time"] {
     width: 100px;
-    padding: 8px 0;
-    margin: 0 auto;
+    height: 36px;
     border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    background-color: #fff;
     font-weight: bold;
     font-size: 16px;
     text-align: center;
+    margin-left: 0;
 }
 
 input[type="time"]::-webkit-calendar-picker-indicator {
@@ -77,7 +101,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .time-separator {
-    margin: 0 20px;
+    margin: 0 24px;
     font-weight: bold;
 }
 
@@ -89,13 +113,21 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .attendance-detail__text {
-    width: 270px;
-    min-height: 80px;
-    padding: 16px 8px;
+    width: 100%;
+    max-width: 400px;
+    min-height: 100px;
+    padding: 12px;
     resize: none;
     font-size: 14px;
     border: 1px solid #E1E1E1;
+    border-radius: 4px;
     box-sizing: border-box;
+}
+
+.error-message {
+    color: #e60023;
+    font-size: 14px;
+    margin-top: 6px;
 }
 
 .attendance-detail__action {
@@ -110,12 +142,12 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .attendance-detail__btn {
-    padding: 8px 40px;
-    font-size: 22px;
+    padding: 10px 45px;
+    font-size: 20px;
     background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
 }
 

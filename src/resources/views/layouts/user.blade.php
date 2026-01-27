@@ -7,13 +7,14 @@
     <link rel="stylesheet" href="{{ asset('css/layouts/user.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @yield('css')
+    @yield('js')
 </head>
 <body class="user-body">
     <header class="user-header">
         <div class="user-header__inner">
             <div class="user-header-utilities">
                 {{-- ロゴ --}}
-                <a href="" class="user-header__logo">
+                <a href="{{ route('user.attendance.list') }}" class="user-header__logo">
                     <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="user-header__logo-img">
                 </a>
 

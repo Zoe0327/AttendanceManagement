@@ -2,7 +2,7 @@
 
 namespace App\Models;
 use Carbon\Carbon;
-
+use App\Models\CorrectionRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,11 +10,15 @@ class Attendance extends Model
 {
     use HasFactory;
 
+    const STATUS_FIXED   = 1;   // 確定
+    const STATUS_ADMIN   = 2;   // 管理者修正
+
     protected $fillable = [
         'user_id',
         'work_date',
         'start_time',
         'end_time',
+        'remark',
         'status',
     ];
 
@@ -29,70 +33,64 @@ class Attendance extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * 休憩（1勤怠に対して複数）
-     */
+    //休憩（1勤怠に対して複数）
     public function breaks()
     {
         return $this->hasMany(BreakTime::class);
     }
 
-    public function getTotalWorkMinutesAttribute()
-    {
-        // 出勤 or 退勤がない場合は 0
-        if (!$this->start_time || !$this->end_time) {
-            return 0;
-        }
-
-        $start = Carbon::parse($this->start_time);
-        $end = Carbon::parse($this->end_time);
-
-        // 総勤務時間（分）
-        $totalMinutes = $start->diffInMinutes($end);
-
-        // 休憩時間合計（分）
-        $breakMinutes = $this->breaks
-            ->whereNotNull('end_time')
-            ->sum(function ($break) {
-                return Carbon::parse($break->start_time)
-                    ->diffInMinutes(Carbon::parse($break->end_time));
-            });
-        return max(0, $totalMinutes - $breakMinutes);
-    }
-    public function getTotalBreakTimeAttribute()
-    {
-        $minutes = $this->breaks
-            ->whereNotNull('end_time')
-            ->sum(function ($break) {
-                return \Carbon\Carbon::parse($break->start_time)
-                    ->diffInMinutes(\Carbon\Carbon::parse($break->end_time));
-            });
-
-        $hours = floor($minutes / 60);
-        $mins  = $minutes % 60;
-
-        return sprintf('%d:%02d', $hours, $mins);
-    }
-
-    // 表示用（H:i 形式）
-    public function getTotalWorkTimeAttribute()
-    {
-        $minutes = $this->total_work_minutes;
-
-        $hours = floor($minutes / 60);
-        $mins  = $minutes % 60;
-        return sprintf('%d:%02d', $hours, $mins);
-    }
-    /**
-     * 修正申請（1勤怠に対して複数）
-     */
     public function correctionRequests()
     {
         return $this->hasMany(CorrectionRequest::class);
     }
 
-    public function stamps()
+    //修正申請中か
+    public function hasPendingCorrection(): bool
     {
-        return $this->hasMany(AttendanceStamp::class);
+        return $this->correctionRequests()
+            ->where('status', 'pending')
+            ->exists();
     }
+
+    // 勤務時間（分）
+    public function getTotalWorkMinutesAttribute()
+    {
+        if (!$this->start_time || !$this->end_time) {
+            return 0;
+        }
+
+        $totalMinutes = $this->start_time->diffInMinutes($this->end_time);
+
+        $breakMinutes = $this->breaks
+            ->whereNotNull('end_time')
+            ->sum(
+                fn($break) =>
+                Carbon::parse($break->start_time)
+                    ->diffInMinutes(Carbon::parse($break->end_time))
+            );
+
+        return max(0, $totalMinutes - $breakMinutes);
+    }
+
+    // 勤務時間（H:i 表示）
+    public function getTotalWorkTimeAttribute()
+    {
+        $minutes = $this->total_work_minutes;
+        return sprintf('%d:%02d', floor($minutes / 60), $minutes % 60);
+    }
+
+    // 休憩時間（H:i 表示）
+    public function getTotalBreakTimeAttribute()
+    {
+        $minutes = $this->breaks
+            ->whereNotNull('end_time')
+            ->sum(
+                fn($break) =>
+                Carbon::parse($break->start_time)
+                    ->diffInMinutes(Carbon::parse($break->end_time))
+            );
+
+        return sprintf('%d:%02d', floor($minutes / 60), $minutes % 60);
+    }
+
 }

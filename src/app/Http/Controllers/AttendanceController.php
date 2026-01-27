@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
 use App\Models\BreakTime;
+use App\Http\Requests\Attendance\StoreCorrectionRequest;
 
 class AttendanceController extends Controller
 {
@@ -153,15 +154,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function storeCorrection(Request $request, Attendance $attendance){
-        $request->validate([
-            'work_start' => ['required', 'date_format:H:i'],
-            'work_end' => ['required', 'date_format:H:i'],
-            'breaks.*.start' => ['nullable', 'date_format:H:i'],
-            'breaks.*.end' => ['nullable', 'date_format:H:i'],
-            'remark' => ['required', 'string'],
-        ]);
-
+    public function storeCorrection(StoreCorrectionRequest $request, Attendance $attendance){
         //勤務日
         $workDate = $attendance->work_date->format('Y-m-d');
         //出勤・退勤をdatetimeに変換

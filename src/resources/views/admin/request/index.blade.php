@@ -8,7 +8,7 @@
     <h2 class="admin-attendance-request__title">申請一覧</h2>
 
     <div class="admin-attendance-request__tabs">
-        <h4 class="admin-request__tab request__tab--active" data-target="waiting-approval">承認待ち</h4>
+        <h4 class="admin-request__tab admin-request__tab--active" data-target="waiting-approval">承認待ち</h4>
         <h4 class="admin-request__tab" data-target="approved">承認済み</h4>
     </div>
 
@@ -53,7 +53,7 @@
                         {{ $request->created_at->format('Y/m/d') }}
                     </td>
                     <td>
-                        <a href="{{ route('user.attendance.show', $request->attendance_id) }}">
+                        <a href="{{ route('admin.attendance.show', $request->attendance_id) }}">
                             詳細
                         </a>
                     </td>
@@ -67,4 +67,8 @@
     </table>
 </div>
 
+@endsection
+
+@section('js')
+<script src="{{ asset('js/admin/request/tab.js') }}"></script>
 @endsection

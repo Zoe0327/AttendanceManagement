@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\AdminLoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,16 +15,17 @@ class AuthController extends Controller
     }
 
     //管理者ログイン処理
-    public function authenticate(Request $request)
+    public function authenticate(AdminLoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('admin')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($request->only('email', 'password')
+            )
+        ) {
             return redirect()->route('admin.attendance.list');
         }
 
-        return back()->witherrors([
-            'email' =>'メールアドレスまたはパスワードが正しくありません',
+        return back()->withErrors([
+            'email' =>'ログイン情報が登録されていません',
         ])->withInput();
     }
 

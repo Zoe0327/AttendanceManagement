@@ -56,6 +56,15 @@
     max-width: 400px;
 }
 
+.attendance-status__button form {
+    display: flex;
+    justify-content: center;
+}
+
+.attendance-status__button form:only-child {
+    grid-column: 1 / -1;
+}
+
 .attendance-status__button button {
     margin-top: 20px;
     padding: 20px 0;
@@ -63,13 +72,7 @@
     border-radius: 8px;
     border: none;
     cursor: pointer;
-    width: 100%;
-    max-width: 180px;
-    justify-self: center;
-}
-
-.attendance-status__button button:only-child {
-    grid-column: 1 / -1;
+    width: 180px;
 }
 
 .status__button-start {

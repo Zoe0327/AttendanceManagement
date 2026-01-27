@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\UpdateAttendanceRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AdminAttendanceController extends Controller
@@ -45,10 +47,34 @@ class AdminAttendanceController extends Controller
         ]);
     }
 
-    public function update(Request $request, Attendance $attendance)
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
     {
+        DB::transaction(function () use ($request, $attendance) {
+            //勤怠本体更新
+            $attendance->update([
+                'start_time' => $request->work_start,
+                'end_time' =>$request->work_end,
+                'status' => 1, //確定
+                'remark' => $request->remark,
+            ]);
+            
+            $attendance->breaks()->delete();
+
+            //休憩を一旦削除
+            if ($request->has('breaks')) {
+                foreach ($request->breaks as $break) {
+                    if (!empty($break['start']) && !empty($break['end'])) {
+                        $attendance->breaks()->create([
+                            'start_time' => $break['start'],
+                            'end_time'   => $break['end'],
+                        ]);
+                    }
+                }
+            }
+        });
         return redirect()
-            ->route('admin.attendance.show', $attendance->id);
+            ->route('admin.attendance.show', $attendance->id)
+            ->with('message', '勤怠を修正しました');
     }
 
     public function staff(Request $request, $id)

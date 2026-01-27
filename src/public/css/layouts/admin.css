@@ -1,3 +1,11 @@
+.admin-layout {
+    min-width: 1400px;
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
 .admin-body {
     font-family: 'Arial', sans-serif;
     background-color: #F0EFF2;
@@ -19,7 +27,7 @@
 }
 
 .admin-header__inner {
-    max-width: 1200px;
+    max-width: 1540px;
     margin: 0 auto;
     padding: 0 20px;
 }
