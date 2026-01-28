@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminAttendanceController extends Controller
 {
@@ -95,6 +96,63 @@ class AdminAttendanceController extends Controller
             'user' => $user,
             'attendances' => $attendances,
             'month' => $month,
+        ]);
+    }
+
+    public function exportCsv(Request $request, $id): StreamedResponse
+    {
+        $user = User::findOrFail($id);
+
+        $month = $request->query('month')
+        ? Carbon::createFromFormat('Y-m', $request->query('month'))
+        : now();
+        
+        $startOfMonth = $month->copy()->startOfMonth();
+        $endOfMonth = $month->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->orderBy('work_date')
+            ->get();
+
+        $fileName = sprintf(
+            '%s_%s_attendance.csv',
+            $user->name,
+            $month->format('Y_m')
+        );
+
+        //CSVレスポンス
+        return response()->streamDownload(function () use ($attendances) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM(Excel文字化け対策)
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            //ヘッダー行
+            fputcsv($handle, [
+                '日付',
+                '出勤',
+                '退勤',
+                '休憩',
+                '合計',
+            ]);
+
+            //データ行
+            foreach ($attendances as $attendance) {
+                fputcsv($handle, [
+                    $attendance->work_date->format('Y/m/d'),
+                    optional($attendance->start_time)->format('H:i'),
+                    optional($attendance->end_time)->format('H:i'),
+                    $attendance->total_break_time,
+                    $attendance->total_work_time,
+                ]);
+            }
+
+            fclose($handle);
+
+        }, $fileName, [
+            'Content-Type' => 'text/csv',
         ]);
     }
 }

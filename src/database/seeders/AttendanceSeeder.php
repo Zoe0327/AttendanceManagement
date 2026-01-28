@@ -16,20 +16,28 @@ class AttendanceSeeder extends Seeder
      */
     public function run():void
     {
-        //一般ユーザーを複数作成
-        User::factory()
-            ->count(5)
-            ->create()
-            ->each(function ($user) {
-                collect(range(1, 5))->each(function ($i) use ($user) {
-                    Attendance::factory()
-                        ->for($user)
-                        ->state([
-                            'work_date' => now()->subDays($i)->toDateString(),
-                        ])
-                        ->has(BreakTime::factory()->count(rand(0, 2)), 'breaks')
-                        ->create();
-                });
+        //一般ユーザーの名前を固定
+        $names = [
+            '山田　太郎',
+            '佐藤　花子',
+            '鈴木　次郎',
+            '高橋　ふみ子',
+            '田中　健司',
+        ];
+
+        foreach ($names as $name) {
+            $user = User::factory()->create([
+                'name' => $name,
+            ]);
+             collect(range(1, 10))->each(function ($i) use ($user) {
+                Attendance::factory()
+                    ->for($user)
+                    ->state([
+                        'work_date' => now()->subDays($i)->toDateString(),
+                    ])
+                    ->has(BreakTime::factory()->count(rand(0, 2)), 'breaks')
+                    ->create();
             });
+        }
     }
 }

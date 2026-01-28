@@ -114,11 +114,19 @@
     position: absolute;
     right: 20px;
     bottom: -60px;
+}
+
+.staff-data__export a {
+    display: inline-block;
     padding: 8px 40px;
     font-size: 22px;
     background-color: #000;
     color: #fff;
-    border: none;
+    text-decoration: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.staff-data__export a:hover {
+    opacity:0.8;
 }

@@ -74,6 +74,10 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     /* スタッフ別勤怠一覧 */
     Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staff'])
         ->name('attendance.staff');
-    });
 
-
+/* スタッフ別勤怠一覧CSV出力 */
+    Route::get(
+        '/attendance/staff/{id}/csv',
+        [AdminAttendanceController::class, 'exportCsv']
+    )->name('attendance.staff.csv');
+});
