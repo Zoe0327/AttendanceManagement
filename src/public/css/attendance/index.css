@@ -3,6 +3,7 @@
     margin: 80px auto 0;
     padding: 40px;
     text-align: center;
+    background-color: #F0EFF2;
 }
 
 .attendance-status {
@@ -21,11 +22,32 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: bold;
 }
 
 .status__at-work {
-    color: #999;
+    width: 100px;
+    height: 40px;
+    border-radius: 50px;
+    background-color: #C8C8C8;
+    color: #696969;
     font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.status__finished {
+    width: 100px;
+    height: 40px;
+    border-radius: 50px;
+    background-color: #C8C8C8;
+    color: #696969;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-weight: bold;
 }
 
@@ -68,8 +90,8 @@
 .attendance-status__button button {
     margin-top: 20px;
     padding: 20px 0;
-    font-size: 18px;
-    border-radius: 8px;
+    font-size: 25px;
+    border-radius: 20px;
     border: none;
     cursor: pointer;
     width: 180px;
@@ -78,21 +100,25 @@
 .status__button-start {
     background-color: #000;
     color: #fff;
+    font-weight: bold;
 }
 
 .status__button-end {
     background-color: #000;
     color: #fff;
+    font-weight: bold;
 }
 
 .status__button-break-start {
     background-color: #fff;
     color: #000;
+    font-weight: bold;
 }
 
 .status__button-break-end {
     background-color: #fff;
     color: #000;
+    font-weight: bold;
 }
 
 .attendance-status__end {

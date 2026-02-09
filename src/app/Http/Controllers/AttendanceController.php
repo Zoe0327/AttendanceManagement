@@ -113,15 +113,13 @@ class AttendanceController extends Controller
         $user = auth()->user();
 
         //表示する月
-        $currentMonth = $request->input('month')
-            ? Carbon::createFromFormat('Y-m', $request->month)
+        $currentMonth = $request->query('month')
+            ? Carbon::parse($request->query('month'))
             : Carbon::now();
 
-        $startOfMonth = $currentMonth->copy()->startOfMonth();
-        $endOfMonth = $currentMonth->copy()->endOfMonth();
-
         $attendances = Attendance::where('user_id', $user->id)
-            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->whereYear('work_date', $currentMonth->year)
+            ->whereMonth('work_date', $currentMonth->month)
             ->orderBy('work_date')
             ->get();
 

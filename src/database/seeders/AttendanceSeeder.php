@@ -35,7 +35,6 @@ class AttendanceSeeder extends Seeder
                     ->state([
                         'work_date' => now()->subDays($i)->toDateString(),
                     ])
-                    ->has(BreakTime::factory()->count(rand(0, 2)), 'breaks')
                     ->create();
             });
         }

@@ -12,6 +12,8 @@
             <p class="status__at-work">勤務中</p>
         @elseif ($status === 'on_break')
             <p class="status__at-work">休憩中</p>
+        @elseif ($status === 'finished')
+            <p class="status__finished">退勤済</p>
         @endif
     </div>
     <div class="attendance-date">

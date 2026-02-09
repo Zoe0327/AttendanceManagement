@@ -35,10 +35,11 @@ class AdminAttendanceController extends Controller
         $attendance->load(['user', 'breaks', 'correctionRequests.breakCorrections']);
 
         $latestCorrection = $attendance->correctionRequests()
+            ->where('status', 0)
             ->latest()
             ->first();
 
-        $isPending = $latestCorrection && $latestCorrection->status === '0';
+        $isPending = !is_null($latestCorrection);
 
         return view('admin.attendance.show', [
             'attendance' => $attendance,

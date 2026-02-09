@@ -8,20 +8,20 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class BreakTimeFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
+     * ⚠️ 単体使用禁止
+     * AttendanceFactory の afterCreating 専用
      * @return array
      */
     public function definition(): array
     {
-
-            $start = $this->faker->dateTimeBetween('09:00', '18:00');
-            $end = (clone $start)->modify('+30 minutes');
+            //$start = $this->faker->dateTimeBetween('09:00', '18:00');
+            //$end = (clone $start)->modify('+30 minutes');
 
             return [
+                // 値は AttendanceFactory 側で上書きする前提
                 //'attendance_id' => Attendance::factory(),
-                'start_time' => $start->format('H:i'),
-                'end_time' => $end->format('H:i'),
+                'start_time' => '12:00',
+                'end_time' => '13:00',
         ];
     }
 }
