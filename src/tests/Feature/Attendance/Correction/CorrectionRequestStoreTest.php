@@ -122,7 +122,7 @@ class CorrectionRequestStoreTest extends TestCase
         $response = $this->actingAs($user)->post(
             route('user.attendance.correction.store', $attendance->id),
             [
-                'work_time' => '09:00',
+                'work_start' => '09:00',
                 'work_end' => '18:00',
                 'breaks' => [
                     [

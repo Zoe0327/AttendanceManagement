@@ -17,7 +17,7 @@
                         <tr>
                             <th>名前</th>
                             <td class="admin-name-cell">
-                                <span class="admin-name__user">{{ str_replace(' ', '　', $attendance->user->name) }}</span>
+                                <span class="admin-name__user">{{ str_replace(' ', ' ', $attendance->user->name) }}</span>
                             </td>
                         </tr>
                         <tr>

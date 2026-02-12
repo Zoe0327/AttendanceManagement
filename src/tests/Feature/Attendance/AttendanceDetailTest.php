@@ -43,7 +43,7 @@ class AttendanceDetailTest extends TestCase
     public function test_user_name_is_displayed_on_attendance_detail()
     {
         $user = User::factory()->create([
-            'name' => '山田　太郎',
+            'name' => '山田 太郎',
         ]);
 
         $attendance = Attendance::factory()->create([
@@ -53,7 +53,7 @@ class AttendanceDetailTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('user.attendance.show', $attendance->id));
 
-        $response->assertSee('山田　太郎');
+        $response->assertSee('山田 太郎');
     }
 
     public function test_date_is_displayed_on_attendance_detail()

@@ -27,6 +27,8 @@ class UpdateAttendanceRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'work_start.required' => '出勤時間を入力してください',
+            'work_end.required' => '退勤時間を入力してください',
             'remark.required' => '備考を記入してください',
         ];
     }
@@ -58,7 +60,8 @@ class UpdateAttendanceRequest extends FormRequest
                 );
                 return;
             }
-
+            $breakTimes = [];
+            // 休憩時間チェック
             foreach ($this->breaks ?? [] as $index => $break) {
 
                 if (empty($break['start']) || empty($break['end'])) {
@@ -88,11 +91,38 @@ class UpdateAttendanceRequest extends FormRequest
                     );
                 }
 
-                // 勤務時間外
-                if ($breakStart < $start || $breakEnd > $end) {
+                if ($breakStart < $start || $breakStart > $end) {
+                    $validator->errors()->add(
+                        "breaks.$index.start",
+                        '休憩時間が不適切な値です'
+                    );
+                }
+
+                // 休憩終了が退勤より後
+                if ($breakEnd > $end) {
                     $validator->errors()->add(
                         "breaks.$index.end",
                         '休憩時間もしくは退勤時間が不適切な値です'
+                    );
+                }
+
+                //重なりチェック用に保存
+                $breakTimes[] = [
+                    'start' => $breakStart,
+                    'end' => $breakEnd,
+                    'index' => $index,
+                ];
+            }
+
+            //休憩の重なりチェック
+            for ($i = 0; $i < count($breakTimes) - 1; $i++) {
+                $current = $breakTimes[$i];
+                $next = $breakTimes[$i + 1];
+
+                if ($current['end'] > $next['start']) {
+                    $validator->errors()->add(
+                        "breaks.{$next['index']}.start",
+                        '休憩時間が重複しています'
                     );
                 }
             }

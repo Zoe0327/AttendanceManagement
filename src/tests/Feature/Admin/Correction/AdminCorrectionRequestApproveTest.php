@@ -5,6 +5,9 @@ namespace Tests\Feature\Admin\Correction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Admin;
+use App\Models\Attendance;
 
 class AdminCorrectionRequestApproveTest extends TestCase
 {
@@ -13,10 +16,11 @@ class AdminCorrectionRequestApproveTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_admin_can_view_correction_request_details()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+    
     }
+
+    public function test_admin_can_approve_correction_request()
+    {}
 }
