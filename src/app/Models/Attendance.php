@@ -48,7 +48,7 @@ class Attendance extends Model
     public function hasPendingCorrection(): bool
     {
         return $this->correctionRequests()
-            ->where('status', 'pending')
+            ->where('status', '0')
             ->exists();
     }
 

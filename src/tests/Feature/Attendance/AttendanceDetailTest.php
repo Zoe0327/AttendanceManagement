@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Attendance;
 
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Attendance;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 
 class AttendanceDetailTest extends TestCase
 {

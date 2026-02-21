@@ -9,7 +9,7 @@
         @if ($status === 'off_duty')
             <p class="status__off-duty">勤務外</p>
         @elseif ($status === 'working')
-            <p class="status__at-work">勤務中</p>
+            <p class="status__at-work">出勤中</p>
         @elseif ($status === 'on_break')
             <p class="status__at-work">休憩中</p>
         @elseif ($status === 'finished')
@@ -17,7 +17,7 @@
         @endif
     </div>
     <div class="attendance-date">
-        <h2 class="attendance-date__show">{{ \Carbon\Carbon::now()->translatedFormat('Y年m月d日（D）') }}</h2>
+        <h2 class="attendance-date__show">{{ \Carbon\Carbon::now()->translatedFormat('Y年m月d日(D)') }}</h2>
     </div>
     <div class="attendance-time">
         <h1 class="attendance-time__show">{{ $time }}</h1>

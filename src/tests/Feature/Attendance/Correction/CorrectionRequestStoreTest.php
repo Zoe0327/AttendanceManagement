@@ -3,13 +3,13 @@
 namespace Tests\Feature\Attendance\Correction;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Attendance;
 
 class CorrectionRequestStoreTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *

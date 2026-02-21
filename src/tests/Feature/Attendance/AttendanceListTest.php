@@ -5,13 +5,11 @@ namespace Tests\Feature\Attendance;
 use App\Models\User;
 use App\Models\Attendance;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Carbon\Carbon;
 
 class AttendanceListTest extends TestCase
 {
-
     use RefreshDatabase;
     /**
      * A basic feature test example.
@@ -147,4 +145,32 @@ class AttendanceListTest extends TestCase
         $response->assertSee('2026年');
         $response->assertSee('2月1日');
     }
+
+    public function test_break_time_is_displayed_on_attendance_list()
+    {
+        Carbon::setTestNow('2026-02-15 09:00:00');
+
+        $user = User::factory()->create();
+
+        // 勤怠作成
+        $attendance = Attendance::factory()->create([
+            'user_id' => $user->id,
+            'work_date' => '2026-02-15',
+            'start_time' => '09:00:00',
+            'end_time' => '18:00:00',
+        ]);
+
+        // 休憩データを作る
+        $attendance->breaks()->create([
+            'start_time' => '12:00:00',
+            'end_time' => '13:00:00',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $response = $this->actingAs($user)
+            ->get(route('user.attendance.list'));
+
+        $response->assertSee('1:00');
+    }
+
 }

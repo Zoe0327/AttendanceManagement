@@ -48,8 +48,7 @@ class AttendanceController extends Controller
     {
         $workingAttendance = Attendance::where('user_id', auth()->id())
             ->where('work_date', today())
-            ->whereNull('end_time')
-            ->first();
+            ->exists();
 
         if ($workingAttendance) {
             return redirect()->route('user.attendance.index');
@@ -72,6 +71,15 @@ class AttendanceController extends Controller
         ->where('work_date', today())
         ->whereNull('end_time')
         ->firstOrFail();
+
+        $isOnBreak = $attendance->breaks()
+            ->whereNull('end_time')
+            ->exists();
+
+        if ($isOnBreak) {
+            return redirect()->route('user.attendance.index');
+        }
+
         $attendance->breaks()->create([
             'start_time' => now(),
         ]);
