@@ -36,10 +36,10 @@
                                     {{ $latestCorrection->requested_end_time->format('H:i') }}
                                 @else
                                     <input type="time" name="work_start"
-                                    value="{{ $attendance->start_time?->format('H:i') }}">
+                                    value="{{ old('work_start', $attendance->start_time?->format('H:i')) }}">
                                     <span class="admin-time-separator">～</span>
                                     <input type="time" name="work_end"
-                                    value="{{ $attendance->end_time?->format('H:i') }}">
+                                    value="{{ old('work_end', $attendance->end_time?->format('H:i')) }}">
 
                                     @error('work_start')
                                         <p class="error-message">{{ $message }}</p>
@@ -67,9 +67,9 @@
                                 <tr>
                                     <th>休憩{{ $index + 1 }}</th>
                                     <td>
-                                        <input type="time" name="breaks[{{ $index }}][start]" value="{{ $break->start_time?->format('H:i') }}">
+                                        <input type="time" name="breaks[{{ $index }}][start]" value="{{ old("breaks.$index.start", $break->start_time?->format('H:i')) }}">
                                         <span class="admin-time-separator">～</span>
-                                        <input type="time" name="breaks[{{ $index }}][end]" value="{{ $break->end_time?->format('H:i') }}">
+                                        <input type="time" name="breaks[{{ $index }}][end]" value="{{ old("breaks.$index.end", $break->end_time?->format('H:i')) }}">
 
                                         @error("breaks.$index.start")
                                             <p class="error-message">{{ $message }}</p>

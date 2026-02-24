@@ -18,6 +18,5 @@ class DatabaseSeeder extends Seeder
             AttendanceSeeder::class,
         ]);
 
-    // \App\Models\User::factory(10)->create();
     }
 }

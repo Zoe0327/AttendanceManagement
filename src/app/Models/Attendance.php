@@ -56,7 +56,7 @@ class Attendance extends Model
     public function getTotalWorkMinutesAttribute()
     {
         if (!$this->start_time || !$this->end_time) {
-            return 0;
+            return null;
         }
 
         $totalMinutes = $this->start_time->diffInMinutes($this->end_time);
@@ -76,12 +76,20 @@ class Attendance extends Model
     public function getTotalWorkTimeAttribute()
     {
         $minutes = $this->total_work_minutes;
+
+        if (is_null($minutes)) {
+            return null;
+        }
         return sprintf('%d:%02d', floor($minutes / 60), $minutes % 60);
     }
 
     // 休憩時間（H:i 表示）
     public function getTotalBreakTimeAttribute()
     {
+        if (!$this->start_time || !$this->end_time) {
+            return null;
+        }
+        
         $minutes = $this->breaks
             ->whereNotNull('end_time')
             ->sum(

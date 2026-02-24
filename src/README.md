@@ -1,64 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# アプリケーション名
+～勤怠管理アプリ（AttendanceManagement）～
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## アプリケーション概要
+・本アプリは、従業員の勤怠情報を管理するためのWebアプリケーションです。
+・一般ユーザーは出勤・退勤・休憩の打刻、および勤怠修正申請を行うことができます。
+・管理者は全従業員の勤怠確認、修正申請の承認、CSV出力を行うことができます。
 
-## About Laravel
+## 主な機能
+【一般ユーザー機能】
+1.会員登録
+2.ログイン / ログアウト
+3.出勤打刻
+4.退勤打刻
+5.休憩開始 / 終了
+6.月別勤怠一覧表示
+7.勤怠修正申請
+8.修正申請一覧表示
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+【管理者機能】
+1.ログイン
+2.全体勤怠一覧表示
+3.勤怠詳細確認
+4.勤怠修正
+5.修正申請承認
+6.スタッフ一覧表示
+7.スタッフ別勤怠一覧表示
+8.スタッフ別勤怠CSV出力
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 環境構築
+Dockerビルド
+・ git clone git@github.com:Zoe0327/AttendanceManagement.git
+・ docker-compose up -d --build
+*MySQLは、OSによって起動しない場合があるのでそれぞれのPCに併せてdocker-compose.ymlファイルを編集してください。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Laravel環境構築
+1. docker-compose exec php bash
+2. composer install
+3. .env.exampleを.env にリネーム、または新しく.env作成
+4. .envに以下の環境変数を追加 --text
+    DB_CONNECTION=mysql
+    DB_HOST=mysql
+    DB_PORT=3306
+    DB_DATABASE=laravel_db
+    DB_USERNAME=laravel_user
+    DB_PASSWORD=laravel_pass
+  ※ DB_HOST は docker-compose.yml で定義している MySQL サービス名に合わせて設定してください。
+     通常は mysql ですが、環境によってはコンテナ名が異なる場合があります。
+5. アプリケーションキーの作成 php artisan key:generate
+6. マイグレーションの実行 php artisan migrate
+7. シーディングの実行 php artisan db:seed
+8. ストレージングの作成 php artisan storage:link
 
-## Learning Laravel
+## 使用技術（実行環境）
+1.PHP 8.x
+2.Laravel 8.x
+3.MySQL 8.x
+4.Nginx
+5.Docker
+6.PHPUnit
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 使用技術（外部サービス）
+-Mailtrap（メール送信テスト用）
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Mailtrap設定（メール認証・通知確認用）
+1.https://mailtrap.io/ に会員登録
+2.Mailtrapの「Email Testing」からInboxを作成
+3.Integrationsより「Laravel 7.x and 8.x」を選択
+4.表示されたMAIL設定を .env に貼り付け
+例：
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=xxxx
+MAIL_PASSWORD=xxxx
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@example.com
+MAIL_FROM_NAME="${APP_NAME}"
 
-## Laravel Sponsors
+## CSV出力機能について
+-管理者はスタッフ別勤怠一覧画面よりCSV出力が可能です。
+-出力項目：勤務日,出勤時間,退勤時間,休憩時間合計,勤務時間合計
+-文字コード：UTF-8
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## テーブル仕様
+-本アプリケーションで使用しているテーブル構成は以下の通りです。
 
-### Premium Partners
+### users テーブル
+| カラム名              | 型               | PRIMARY KEY | NOT NULL | UNIQUE | FOREIGN KEY |
+| ----------------- | --------------- | ----------- | -------- | ------ | ----------- |
+| id                | unsigned bigint | ○           | ○        | -      | -           |
+| name              | varchar(255)    | -           | ○        | -      | -           |
+| email             | varchar(255)    | -           | ○        | ○      | -           |
+| email_verified_at | timestamp       | -           | -        | -      | -           |
+| password          | varchar(255)    | -           | ○        | -      | -           |
+| remember_token    | varchar(100)    | -           | -        | -      | -           |
+| created_at        | timestamp       | -           | -        | -      | -           |
+| updated_at        | timestamp       | -           | -        | -      | -           |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
 
-## Contributing
+### admins テーブル
+| カラム名       | 型               | PRIMARY KEY | NOT NULL | UNIQUE | FOREIGN KEY |
+| ---------- | --------------- | ----------- | -------- | ------ | ----------- |
+| id         | unsigned bigint | ○           | ○        | -      | -           |
+| email      | varchar(255)    | -           | ○        | ○      | -           |
+| password   | varchar(255)    | -           | ○        | -      | -           |
+| created_at | timestamp       | -           | -        | -      | -           |
+| updated_at | timestamp       | -           | -        | -      | -           |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### attendances テーブル
+| カラム名       | 型               | PRIMARY KEY | NOT NULL | FOREIGN KEY |
+| ---------- | --------------- | ----------- | -------- | ----------- |
+| id         | unsigned bigint | ○           | ○        | -           |
+| user_id    | unsigned bigint | -           | ○        | users(id)   |
+| work_date  | date            | -           | ○        | -           |
+| start_time | time            | -           | -        | -           |
+| end_time   | time            | -           | -        | -           |
+| remark     | text            | -           | -        | -           |
+| status     | text            | -           | -        | -           |
+| created_at | timestamp       | -           | -        | -           |
+| updated_at | timestamp       | -           | -        | -           |
 
-## Code of Conduct
+### breaks テーブル
+| カラム名          | 型               | PRIMARY KEY | NOT NULL | FOREIGN KEY     |
+| ------------- | --------------- | ----------- | -------- | --------------- |
+| id            | unsigned bigint | ○           | ○        | -               |
+| attendance_id | unsigned bigint | -           | ○        | attendances(id) |
+| start_time    | time            | -           | ○        | -               |
+| end_time      | time            | -           | ○        | -               |
+| created_at    | timestamp       | -           | -        | -               |
+| updated_at    | timestamp       | -           | -        | -               |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### correction_requests テーブル
+| カラム名                 | 型               | PRIMARY KEY | NOT NULL | FOREIGN KEY     |
+| -------------------- | --------------- | ----------- | -------- | --------------- |
+| id                   | unsigned bigint | ○           | ○        | -               |
+| user_id              | unsigned bigint | -           | ○        | users(id)       |
+| attendance_id        | unsigned bigint | -           | ○        | attendances(id) |
+| break_id             | unsigned bigint | -           | -        | breaks(id)      |
+| requested_start_time | time            | -           | ○        | -               |
+| requested_end_time   | time            | -           | ○        | -               |
+| reason               | text            | -           | ○        | -               |
+| status               | tinyint         | -           | ○        | -               |
+| created_at           | timestamp       | -           | -        | -               |
+| updated_at           | timestamp       | -           | -        | -               |
 
-## Security Vulnerabilities
+### break_corrections テーブル
+| カラム名                  | 型               | PRIMARY KEY | NOT NULL | FOREIGN KEY             |
+| --------------------- | --------------- | ----------- | -------- | ----------------------- |
+| id                    | unsigned bigint | ○           | ○        | -                       |
+| correction_request_id | unsigned bigint | -           | ○        | correction_requests(id) |
+| start_time            | time            | -           | ○        | -                       |
+| end_time              | time            | -           | ○        | -                       |
+| created_at            | timestamp       | -           | -        | -                       |
+| updated_at            | timestamp       | -           | -        | -                       |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+## statusカラムの定義
+### attendances テーブル status
+-勤怠の現在状態を文字列で管理しています。
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| 値 | 状態 | 説明 |
+|----|------|------|
+| working | 勤務中 | 出勤済みで退勤していない状態 |
+| finished | 退勤済み | 退勤処理が完了している状態 |
+
+※ 休憩中の判定は breaks テーブルの end_time が null かどうかで判定しています。
+※ off_duty / on_break はDBではなく画面表示用ロジックです。
+
+
+### correction_requests テーブル status
+-修正申請の進捗状態を数値で管理しています。
+
+| 値 | 状態 | 説明 |
+|----|------|------|
+| 0 | 申請中 | 管理者の承認待ち |
+| 1 | 承認済み | 管理者が承認済み |
+
+
+※ 勤怠の表示状態（勤務前・休憩中など）はDBのstatus値ではなく、
+attendanceとbreakの状態を組み合わせて動的に判定しています。
+
+## ER図
+![ER図](AttendanceManagement.png)
+
+## テストアカウント
+※ 一般ユーザーはSeederによりランダム生成されます。(password: password123に固定）
+※ 管理者アカウントは以下の固定値です。
+    email: admin@example.com
+    password: password123
+
+## PHPUnitを利用したテストに関して
+### テスト用データベース作成
+docker-compose exec mysql bash
+mysql -u root -p
+
+# パスワードは root
+create database test_database;
+
+### テスト実行
+docker-compose exec php bash
+php artisan migrate:fresh --env=testing
+./vendor/bin/phpunit

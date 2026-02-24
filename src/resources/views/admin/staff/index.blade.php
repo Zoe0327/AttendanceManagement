@@ -37,35 +37,32 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($attendances as $attendance)
-                <tr>
-                    <td>
-                        {{ $attendance->work_date->translatedFormat('m/d (D)') }}
-                    </td>
-                    <td>
-                        {{ $attendance->start_time?->format('H:i') ?? '-' }}
-                    </td>
-                    <td>
-                        {{ $attendance->end_time?->format('H:i') ?? '-' }}
-                    </td>
-                    <td>
-                        {{ $attendance->total_break_time }}
-                    </td>
-                    <td>
-                        {{ $attendance->total_work_time }}
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.attendance.show',$attendance->id) }}">詳細</a>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6">勤怠データがありません</td>
-                </tr>
-            @endforelse
+        @foreach ($dates as $date)
+            @php
+                $attendance = $attendances[$date->toDateString()] ?? null;
+            @endphp
+
+            <tr>
+                <td>{{ $date->translatedFormat('m/d (D)') }}</td>
+
+                <td>{{ $attendance?->start_time?->format('H:i') ?? '' }}</td>
+
+                <td>{{ $attendance?->end_time?->format('H:i') ?? '' }}</td>
+
+                <td>{{ $attendance?->total_break_time ?? '' }}</td>
+
+                <td>{{ $attendance?->total_work_time ?? '' }}</td>
+
+                <td>
+                    <a href="{{ route('admin.attendance.showByDate', $date->toDateString()) }}?user_id={{ $user->id }}">
+                        詳細
+                    </a>
+                </td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
-    
+
     <div class="staff-data__export">
         <a href="{{ route('admin.attendance.staff.csv', [
             'id' => $user->id,

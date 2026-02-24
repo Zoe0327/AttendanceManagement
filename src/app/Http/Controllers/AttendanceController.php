@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
-use App\Models\BreakTime;
+use Illuminate\Support\Facades\DB;
+use App\Models\BreakCorrection;
 use App\Http\Requests\Attendance\StoreCorrectionRequest;
 
 class AttendanceController extends Controller
@@ -120,25 +121,60 @@ class AttendanceController extends Controller
     {
         $user = auth()->user();
 
-        //表示する月
+        // 表示する月
         $currentMonth = $request->query('month')
             ? Carbon::parse($request->query('month'))
             : Carbon::now();
 
+        // ▼ 月初〜月末を取得
+        $start = $currentMonth->copy()->startOfMonth();
+        $end   = $currentMonth->copy()->endOfMonth();
+
+        // ▼ 月の全日付を生成
+        $dates = [];
+        while ($start <= $end) {
+            $dates[] = $start->copy();
+            $start->addDay();
+        }
+
+        // ▼ その月の勤怠を取得して日付キーにする
         $attendances = Attendance::where('user_id', $user->id)
             ->whereYear('work_date', $currentMonth->year)
             ->whereMonth('work_date', $currentMonth->month)
-            ->orderBy('work_date')
-            ->get();
+            ->get()
+            ->keyBy(function ($item) {
+                return \Carbon\Carbon::parse($item->work_date)->toDateString();
+            });
 
         return view('attendance.list', [
+            'dates' => $dates,
             'attendances' => $attendances,
             'currentMonth' => $currentMonth,
         ]);
     }
 
-    public function show(Attendance $attendance)
+    public function show($date)
     {
+        $user = auth()->user();
+
+        try {
+            $date = Carbon::createFromFormat('Y-m-d', $date)->toDateString();
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $attendance = Attendance::firstOrCreate(
+            [
+                'user_id'   => $user->id,
+                'work_date' => $date,
+            ],
+            [
+                'start_time' => null,
+                'end_time'   => null,
+                'remark'     => null,
+            ]
+        );
+
         $attendance->load([
             'user',
             'breaks',
@@ -154,53 +190,64 @@ class AttendanceController extends Controller
 
         return view('attendance.show', [
             'attendance' => $attendance,
-            'breaks'     => $attendance->breaks,
+            'date'       => $date,
+            'breaks'     => $attendance->breaks ?? collect(),
             'isPending'  => $isPending,
             'latestCorrection' => $latestCorrection
         ]);
     }
 
-    public function storeCorrection(StoreCorrectionRequest $request, Attendance $attendance){
-        //勤務日
-        $workDate = $attendance->work_date->format('Y-m-d');
-        //出勤・退勤をdatetimeに変換
-        $requestedStart = Carbon::createFromFormat(
-            'Y-m-d H:i',
-            $workDate . ' ' . $request->work_start
-        );
-        $requestedEnd = Carbon::createFromFormat(
-            'Y-m-d H:i',
-            $workDate . ' ' . $request->work_end
-        );
-        //修正申請を保存
-        $correction = CorrectionRequest::create([
-            'attendance_id' => $attendance->id,
-            'user_id' => auth()->id(),
-            'requested_start_time' => $requestedStart,
-            'requested_end_time' => $requestedEnd,
-            'reason' => $request->remark,
-            'status' => 0,//承認待ち
+    public function storeCorrection(StoreCorrectionRequest $request, $date)
+    {
+        $user = auth()->user();
+
+        try {
+            $date = Carbon::createFromFormat('Y-m-d', $date)->toDateString();
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $attendance = Attendance::firstOrCreate([
+            'user_id'   => $user->id,
+            'work_date' => $date,
         ]);
 
-        //休憩修正（複数）
-        foreach ($request->breaks ?? [] as $break) {
-            if (empty($break['start']) || empty($break['end'])) {
-                continue;
-            }
+        $workDate = $date;
 
-            $correction->breakCorrections()->create([
-                'start_time' => Carbon::createFromFormat(
-                    'Y-m-d H:i',
-                    $workDate . ' ' . $break['start']
-                ),
-                'end_time' => Carbon::createFromFormat(
-                    'Y-m-d H:i',
-                    $workDate . ' ' . $break['end']
-                ),
+        $requestedStart = Carbon::createFromFormat('Y-m-d H:i', $workDate . ' ' . $request->work_start);
+        $requestedEnd   = Carbon::createFromFormat('Y-m-d H:i', $workDate . ' ' . $request->work_end);
+
+        // breaks：start/end 両方ある行だけ採用（空欄行は無視）
+        $breakInputs = collect($request->input('breaks', []))
+            ->filter(function ($b) {
+                $s = $b['start'] ?? null;
+                $e = $b['end'] ?? null;
+                return !empty($s) && !empty($e);
+            })
+            ->values();
+
+        DB::transaction(function () use ($attendance, $user, $requestedStart, $requestedEnd, $request, $breakInputs) {
+
+            $correction = CorrectionRequest::create([
+                'attendance_id'        => $attendance->id,
+                'user_id'              => $user->id,
+                'requested_start_time' => $requestedStart,
+                'requested_end_time'   => $requestedEnd,
+                'reason'               => $request->remark,
+                'status'               => 0,
             ]);
-        }
+
+            // ✅ break_corrections に保存
+            foreach ($breakInputs as $b) {
+                $correction->breakCorrections()->create([
+                    'start_time' => $b['start'], // 'H:i'
+                    'end_time'   => $b['end'],   // 'H:i'
+                ]);
+            }
+        });
+
         return redirect()
-            ->route('user.attendance.show', $attendance->id)
+            ->route('user.attendance.show', $date)
             ->with('message', '修正申請を送信しました');
     }
 }

@@ -118,6 +118,8 @@ class StoreCorrectionRequest extends FormRequest
                     'index' => $index,
                 ];
             }
+            // 開始時刻でソートしてから重なり判定（順不同入力でもOK）
+            usort($breakTimes, fn($a, $b) => $a['start'] <=> $b['start']);
 
             //休憩の重なりチェック
             for ($i = 0; $i < count($breakTimes) - 1; $i++) {

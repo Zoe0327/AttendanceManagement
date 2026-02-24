@@ -33,32 +33,34 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($attendances as $attendance)
+            @foreach ($dates as $date)
+                @php
+                    $attendance = $attendances[$date->toDateString()] ?? null;
+                @endphp
+
                 <tr>
+                    <td>{{ $date->translatedFormat('m/d (D)') }}</td>
                     <td>
-                        {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d (D)') }}
+                        {{ $attendance?->start_time
+                            ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i')
+                            : '' }}
                     </td>
                     <td>
-                        {{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '-' }}
+                        {{ $attendance?->end_time
+                            ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i')
+                            : '' }}
                     </td>
+
+                    <td>{{ $attendance?->total_break_time }}</td>
+                    <td>{{ $attendance?->total_work_time }}</td>
+
                     <td>
-                        {{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}
-                    </td>
-                    <td>
-                        {{ $attendance->total_break_time }}
-                    </td>
-                    <td>
-                        {{ $attendance->total_work_time }}
-                    </td>
-                    <td>
-                        <a href="{{ route('user.attendance.show', $attendance->id) }}">詳細</a>
+                        <a href="{{ route('user.attendance.show', $date->toDateString()) }}">
+                            詳細
+                        </a>
                     </td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6">勤怠データがありません</td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 </div>

@@ -18,16 +18,10 @@ class AttendanceFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'work_date' => $this->faker->dateTimeBetween(
-                '2026-01-01',
-                '2026-01-31'
-            )->format('Y-m-d'),
+            'work_date' => now()->format('Y-m-d'),
             'start_time' => '09:00',
             'end_time' => '18:00',
-            'status' => $this->faker->randomElement([
-                Attendance::STATUS_FIXED,
-                Attendance::STATUS_ADMIN,
-            ]),
+            'status' => Attendance::STATUS_FIXED,
         ];
     }
 

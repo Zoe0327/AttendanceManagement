@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Attendance;
-use App\Models\BreakTime;
+use Carbon\Carbon;
 
 class AttendanceSeeder extends Seeder
 {
@@ -29,14 +29,31 @@ class AttendanceSeeder extends Seeder
             $user = User::factory()->create([
                 'name' => $name,
             ]);
-             collect(range(1, 10))->each(function ($i) use ($user) {
-                Attendance::factory()
-                    ->for($user)
-                    ->state([
-                        'work_date' => now()->subDays($i)->toDateString(),
-                    ])
-                    ->create();
-            });
+            foreach ([0, 1, 2] as $i) {
+
+                $month = now()->subMonths($i);
+
+                $start = $month->copy()->startOfMonth();
+                $end   = $month->copy()->endOfMonth();
+
+                while ($start <= $end) {
+
+                    // 土日は出勤しない
+                    if (!$start->isWeekend()) {
+
+                        Attendance::factory()
+                            ->for($user)
+                            ->state([
+                                'work_date' => $start->toDateString(),
+                                'start_time' => '09:00',
+                                'end_time'   => '18:00',
+                            ])
+                            ->create();
+                    }
+
+                    $start->addDay();
+                }
+            }
         }
     }
 }

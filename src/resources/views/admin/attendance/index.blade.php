@@ -39,10 +39,10 @@
                         {{ $attendance->user->name }}
                     </td>
                     <td>
-                        {{ $attendance->start_time?->format('H:i') ?? '-' }}
+                        {{ $attendance->start_time?->format('H:i') }}
                     </td>
                     <td>
-                        {{ $attendance->end_time?->format('H:i') ?? '-' }}
+                        {{ $attendance->end_time?->format('H:i') }}
                     </td>
                     <td>
                         {{ $attendance->total_break_time }}

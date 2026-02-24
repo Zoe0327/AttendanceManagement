@@ -8,7 +8,7 @@
     <h2 class="attendance-detail__title">勤怠詳細</h2>
 
     <div class="attendance-detail__content">
-        <form method="POST" action="{{ route('user.attendance.correction.store', $attendance->id) }}" novalidate>
+        <form method="POST" action="{{ route('user.attendance.correction.store', $date) }}" novalidate>
             @csrf
 
             <div class="attendance-detail__table-wrapper">
@@ -39,9 +39,9 @@
                                     <span class="time-separator">～</span>
                                     {{ $latestCorrection->requested_end_time->format('H:i') }}
                                 @else
-                                    <input type="time" name="work_start" value="{{ $attendance->start_time?->format('H:i') }}">
+                                    <input type="time" name="work_start" value="{{ old('work_start', $attendance->start_time?->format('H:i')) }}">
                                     <span class="time-separator">～</span>
-                                    <input type="time" name="work_end" value="{{ $attendance->end_time?->format('H:i') }}">
+                                    <input type="time" name="work_end" value="{{ old('work_end', $attendance->end_time?->format('H:i')) }}">
 
                                     @error('work_start')
                                         <p class="error-message">{{ $message }}</p>
@@ -69,9 +69,9 @@
                                 <tr>
                                     <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                                     <td>
-                                        <input type="time" name="breaks[{{ $index }}][start]" value="{{ $break->start_time?->format('H:i') }}">
+                                        <input type="time" name="breaks[{{ $index }}][start]" value="{{ old("breaks.$index.start", $break->start_time?->format('H:i')) }}">
                                         <span class="time-separator">～</span>
-                                        <input type="time" name="breaks[{{ $index }}][end]" value="{{ $break->end_time?->format('H:i') }}">
+                                        <input type="time" name="breaks[{{ $index }}][end]" value="{{ old("breaks.$index.end", $break->end_time?->format('H:i')) }}">
 
                                         @error("breaks.$index.start")
                                             <p class="error-message">{{ $message }}</p>
@@ -90,9 +90,9 @@
                             <tr>
                                 <th>休憩{{ $nextIndex + 1 }}</th>
                                 <td>
-                                    <input type="time" name="breaks[{{ $nextIndex }}][start]">
+                                    <input type="time" name="breaks[{{ $nextIndex }}][start]" value="{{ old("breaks.$nextIndex.start") }}">
                                     <span class="time-separator">～</span>
-                                    <input type="time" name="breaks[{{ $nextIndex }}][end]">
+                                    <input type="time" name="breaks[{{ $nextIndex }}][end]" value="{{ old("breaks.$nextIndex.end") }}">
 
                                     @error("breaks.$nextIndex.start")
                                         <p class="error-message">{{ $message }}</p>
@@ -109,7 +109,7 @@
                                 @if ($isPending)
                                     {{ $latestCorrection->reason }}
                                 @else
-                                    <textarea name="remark" class="attendance-detail__text" rows="4">{{ $attendance->remark }}</textarea>
+                                    <textarea name="remark" class="attendance-detail__text" rows="4">{{ old('remark', $attendance->remark) }}</textarea>
                                     @error('remark')
                                         <p class="error-message">{{ $message }}</p>
                                     @enderror
