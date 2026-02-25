@@ -57,7 +57,9 @@ class AdminUserTest extends TestCase
 
         $otherUser = User::factory()->create();
         Attendance::factory()->for($otherUser)->create([
-            'work_date' => '2026-02-20'
+            'work_date' => '2026-02-20',
+            'start_time' => '07:00',
+            'end_time' => '16:00',
         ]);
 
         /** @var \App\Models\Admin $admin */
@@ -65,9 +67,9 @@ class AdminUserTest extends TestCase
             ->get(route('admin.attendance.staff', $user->id));
 
         $response->assertStatus(200);
-        $response->assertDontSee(
-            Carbon::parse('2026-02-20')->format('m/d')
-        );
+        $response->assertSee('02/20');
+        $response->assertDontSee('07:00');
+        $response->assertDontSee('16:00');
 
         foreach ($attendances as $attendance) {
             $response->assertSee($attendance->start_time->format('H:i'));
@@ -131,7 +133,7 @@ class AdminUserTest extends TestCase
         $admin = Admin::factory()->create();
         $user = User::factory()->create();
 
-        $attendance = Attendance::factory()->create([
+        $attendance = Attendance::factory()->for($user)->create([
             'work_date' => '2026-02-01',
         ]);
         /** @var \App\Models\Admin $admin */

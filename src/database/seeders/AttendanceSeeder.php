@@ -41,16 +41,23 @@ class AttendanceSeeder extends Seeder
                     // 土日は出勤しない
                     if (!$start->isWeekend()) {
 
-                        Attendance::factory()
+                        $factory = Attendance::factory()
                             ->for($user)
                             ->state([
-                                'work_date' => $start->toDateString(),
+                                'work_date'  => $start->toDateString(),
                                 'start_time' => '09:00',
                                 'end_time'   => '18:00',
-                            ])
-                            ->create();
+                            ]);
+
+                        // 70%の確率で休憩（最大2回）を付ける
+                        if (rand(1, 100) <= 70) {
+                            $factory = $factory->withRandomBreaks(2);
+                        }
+
+                        $factory->create();
                     }
 
+                    // 平日/休日関係なく日付を進める
                     $start->addDay();
                 }
             }

@@ -26,7 +26,7 @@ class CorrectionRequestStoreTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->post(
-            route('user.attendance.correction.store', $attendance->id),
+            route('user.attendance.correction.store', $attendance->work_date->toDateString()),
             [
                 'work_start' => '18:30',
                 'work_end' => '17:00',
@@ -56,7 +56,7 @@ class CorrectionRequestStoreTest extends TestCase
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->post(
-            route('user.attendance.correction.store', $attendance->id),
+            route('user.attendance.correction.store', $attendance->work_date->toDateString()),
             [
                 'work_start' => '9:00',
                 'work_end' => '18:00',
@@ -91,7 +91,7 @@ class CorrectionRequestStoreTest extends TestCase
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->post(
-            route('user.attendance.correction.store', $attendance->id),
+            route('user.attendance.correction.store', $attendance->work_date->toDateString()),
             [
                 'work_start' => '9:00',
                 'work_end' => '18:00',
@@ -120,7 +120,7 @@ class CorrectionRequestStoreTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->post(
-            route('user.attendance.correction.store', $attendance->id),
+            route('user.attendance.correction.store', $attendance->work_date->toDateString()),
             [
                 'work_start' => '09:00',
                 'work_end' => '18:00',

@@ -19,26 +19,27 @@ class CorrectionRequestListTest extends TestCase
     public function test_attendance_correction_request_is_created()
     {
         $user = User::factory()->create();
-        
+
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
         ]);
-        
+
         //修正申請実行
         /** @var \App\Models\User $user */
         $this->actingAs($user)->post(
-            route('user.attendance.correction.store', $attendance->id),
+            route('user.attendance.correction.store', $attendance->work_date->toDateString()),
             [
                 'work_start' => '09:00',
                 'work_end' => '18:00',
                 'remark' => 'テスト修正',
+                'breaks' => [],
             ]
         );
 
         //修正申請がDBに作成されていること
         $this->assertDatabaseHas('correction_requests', [
             'attendance_id' => $attendance->id,
-            'status' => '0',
+            'status' => 0,
         ]);
     }
 
@@ -115,7 +116,7 @@ class CorrectionRequestListTest extends TestCase
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)->get(
-            route('user.attendance.show', $attendance->id)
+            route('user.attendance.show', $attendance->work_date->toDateString())
         );
 
         $response->assertStatus(200);

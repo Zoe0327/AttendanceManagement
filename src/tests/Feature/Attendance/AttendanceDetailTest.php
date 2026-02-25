@@ -21,7 +21,7 @@ class AttendanceDetailTest extends TestCase
         $attendance = Attendance::factory()->create();
 
         $response = $this->get(
-            route('user.attendance.show', $attendance->id)
+            route('user.attendance.show', $attendance->work_date->toDateString())
         );
 
         $response->assertRedirect('/login');
@@ -36,7 +36,7 @@ class AttendanceDetailTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
 
         $response->assertStatus(200);
     }
@@ -51,14 +51,14 @@ class AttendanceDetailTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
 
         $response->assertSee('山田 太郎');
     }
 
     public function test_date_is_displayed_on_attendance_detail()
     {
-        $user = user::factory()->create();
+        $user = User::factory()->create();
 
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
@@ -66,7 +66,7 @@ class AttendanceDetailTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
         $response->assertSee('2026年');
         $response->assertSee('2月1日');
     }
@@ -83,7 +83,7 @@ class AttendanceDetailTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
         //出勤時間
         $response->assertSee('09:00');
         //退勤時間
@@ -106,7 +106,7 @@ class AttendanceDetailTest extends TestCase
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
         //休憩開始
         $response->assertSee('12:00');
         //休憩終了

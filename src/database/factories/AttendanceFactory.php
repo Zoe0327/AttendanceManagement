@@ -27,35 +27,40 @@ class AttendanceFactory extends Factory
 
     public function configure()
     {
-        return $this->afterCreating(function (Attendance $attendance) {
-            
-            //休憩の数（0～2）
-            $breakCount = rand(0, 2);
-            $current = \carbon\carbon::createFromFormat('H:i', '12:00');
+        return $this;
+    }
+
+    public function withRandomBreaks(int $max = 2)
+    {
+        return $this->afterCreating(function (Attendance $attendance) use ($max) {
+            $breakCount = rand(0, $max);
+            $current = \Carbon\Carbon::createFromFormat('H:i', '12:00');
 
             for ($i = 0; $i < $breakCount; $i++) {
-            
-                //次の休憩は前回終了後から
                 $start = $current->copy();
-
-                //休憩時間(30~60分)
                 $end = $start->copy()->addMinutes(rand(30, 60));
 
-                //勤務時間内チェック
-
-                if ($end->gt(\Carbon\Carbon::parse($attendance->end_time))) {
+                if ($attendance->end_time && $end->gt(\Carbon\Carbon::parse($attendance->end_time))) {
                     break;
                 }
 
-                BreakTime::create([
-                    'attendance_id' => $attendance->id,
+                $attendance->breaks()->create([
                     'start_time' => $start->format('H:i'),
-                    'end_time' => $end->format('H:i'),
+                    'end_time'   => $end->format('H:i'),
                 ]);
 
-                //次の開始位置を更新
                 $current = $end->copy()->addMinutes(10);
             }
+        });
+    }
+
+    public function withFixedBreak(string $start = '12:00', string $end = '13:00')
+    {
+        return $this->afterCreating(function (Attendance $attendance) use ($start, $end) {
+            $attendance->breaks()->create([
+                'start_time' => $start,
+                'end_time'   => $end,
+            ]);
         });
     }
 }

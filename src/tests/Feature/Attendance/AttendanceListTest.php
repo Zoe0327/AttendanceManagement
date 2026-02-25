@@ -36,25 +36,38 @@ class AttendanceListTest extends TestCase
 
     public function test_user_sees_only_own_attendance_records()
     {
+        Carbon::setTestNow('2026-02-01');
+
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
 
         Attendance::factory()->create([
             'user_id' => $user->id,
             'work_date' => '2026-02-01',
+            'start_time' => '09:00:00',
+            'end_time' => '18:00:00',
         ]);
 
         Attendance::factory()->create([
             'user_id' => $otherUser->id,
             'work_date' => '2026-02-02',
+            'start_time' => '07:00:00',
+            'end_time' => '16:00:00',
         ]);
 
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
             ->get(route('user.attendance.list'));
 
-            $response->assertSee('02/01');
-            $response->assertDontSee('02/02');
+        // 全日付表示なので 02/02 自体は出てもOK
+        $response->assertSee('02/01');
+        $response->assertSee('02/02');
+        // otherUser の時刻は出ない
+        $response->assertDontSee('07:00');
+        $response->assertDontSee('16:00');
+        // 自分の時刻は出る
+        $response->assertSee('09:00');
+        $response->assertSee('18:00');
     }
 
     public function test_current_month_is_displayed_on_attendance_list()
@@ -139,7 +152,7 @@ class AttendanceListTest extends TestCase
         ]);
         /** @var \App\Models\User $user */
         $response = $this->actingAs($user)
-            ->get(route('user.attendance.show', $attendance->id));
+            ->get(route('user.attendance.show', $attendance->work_date->toDateString()));
 
         $response->assertStatus(200);
         $response->assertSee('2026年');
@@ -159,6 +172,9 @@ class AttendanceListTest extends TestCase
             'start_time' => '09:00:00',
             'end_time' => '18:00:00',
         ]);
+
+        // Factoryが勝手に作った休憩を消す
+        $attendance->breaks()->delete();
 
         // 休憩データを作る
         $attendance->breaks()->create([
