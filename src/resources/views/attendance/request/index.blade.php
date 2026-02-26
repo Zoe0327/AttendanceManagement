@@ -31,7 +31,7 @@
                 <td>{{ $request->attendance->work_date->format('Y/m/d') }}</td>
                 <td>{{ $request->reason }}</td>
                 <td>{{ $request->created_at->format('Y/m/d') }}</td>
-                <td><a href="{{ route('user.attendance.show', $request->attendance_id) }}">詳細</a></td>
+                <td><a href="{{ route('user.attendance.show', \Carbon\Carbon::parse($request->attendance->work_date)->format('Y-m-d')) }}">詳細</a></td>
             </tr>
         @empty
             <tr>
@@ -53,7 +53,7 @@
                         {{ $request->created_at->format('Y/m/d') }}
                     </td>
                     <td>
-                        <a href="{{ route('user.attendance.show', $request->attendance_id) }}">
+                        <a href="{{ route('user.attendance.show', \Carbon\Carbon::parse($request->attendance->work_date)->format('Y-m-d')) }}">
                             詳細
                         </a>
                     </td>
