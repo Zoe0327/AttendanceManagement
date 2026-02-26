@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Attendance;
 use App\Models\User;
-use App\Models\BreakTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AttendanceFactory extends Factory

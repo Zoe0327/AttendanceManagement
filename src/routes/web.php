@@ -58,12 +58,13 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         ->name('attendance.list');
 
     /* 勤怠詳細 */
-    Route::get('/attendance/{date}', [AdminAttendanceController::class, 'show'])
+    Route::get('/attendance/{date}', [AdminAttendanceController::class, 'showByDate'])
         ->where('date', '\d{4}-\d{2}-\d{2}')
         ->name('attendance.showByDate');
     Route::get('/attendance/{attendance}', [AdminAttendanceController::class, 'show'])
         ->name('attendance.show');
     Route::put('/attendance/{attendance}', [AdminAttendanceController::class, 'update'])
+        ->whereNumber('attendance')
         ->name('attendance.update');
 
     /* 申請一覧 */

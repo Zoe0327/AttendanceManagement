@@ -31,23 +31,32 @@ class AdminAttendanceController extends Controller
         ]);
     }
 
-    public function show($param, Request $request)
+    public function show(Attendance $attendance)
     {
-        // param が日付かIDか判定
-        $isDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $param);
+        $attendance->load(['user', 'breaks', 'correctionRequests.breakCorrections']);
 
-        if ($isDate) {
-            $userId = $request->query('user_id'); // staff一覧から渡す
-            abort_unless($userId, 404);
+        $latestCorrection = $attendance->correctionRequests()
+            ->where('status', 0)
+            ->latest()
+            ->first();
 
-            $attendance = Attendance::firstOrCreate(
-                ['user_id' => $userId, 'work_date' => $param],
-                ['status' => Attendance::STATUS_ADMIN] // 必要なら。不要なら消してOK
-            );
-        } else {
-            $attendance = Attendance::with(['user', 'breaks', 'correctionRequests.breakCorrections'])
-                ->findOrFail($param);
-        }
+        return view('admin.attendance.show', [
+            'attendance' => $attendance,
+            'breaks' => $attendance->breaks,
+            'latestCorrection' => $latestCorrection,
+            'isPending' => !is_null($latestCorrection),
+        ]);
+    }
+
+    public function showByDate(string $date, Request $request)
+    {
+        $userId = $request->query('user_id');
+        abort_unless($userId, 404);
+
+        $attendance = Attendance::firstOrCreate(
+            ['user_id' => $userId, 'work_date' => $date],
+            ['status' => Attendance::STATUS_ADMIN]
+        );
 
         $attendance->load(['user', 'breaks', 'correctionRequests.breakCorrections']);
 
@@ -56,13 +65,11 @@ class AdminAttendanceController extends Controller
             ->latest()
             ->first();
 
-        $isPending = !is_null($latestCorrection);
-
         return view('admin.attendance.show', [
             'attendance' => $attendance,
             'breaks' => $attendance->breaks,
             'latestCorrection' => $latestCorrection,
-            'isPending' => $isPending,
+            'isPending' => !is_null($latestCorrection),
         ]);
     }
 
@@ -76,7 +83,7 @@ class AdminAttendanceController extends Controller
                 'status' => 1, //確定
                 'remark' => $request->remark,
             ]);
-            
+
             $attendance->breaks()->delete();
 
             //休憩を一旦削除

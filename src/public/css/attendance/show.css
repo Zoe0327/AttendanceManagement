@@ -1,5 +1,5 @@
 .attendance-detail {
-    max-width: 800px;
+    max-width: 900px;
     margin: 50px auto;
     padding: 40px;
 }
@@ -10,18 +10,20 @@
     margin-bottom: 30px;
     border-left: 8px solid #000;
     padding-left: 16px;
+    margin-left: 40px;
 }
 
 .attendance-detail__content {
     background-color: transparent;
-    padding: 30px;
+    padding: 20px 40px;
     border-radius: 10px;
 }
 
 .attendance-detail__table-wrapper {
     background-color: #fff;
-    padding: 20px 40px;
+    padding: 20px 0;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 .attendance-detail__table {
@@ -74,14 +76,14 @@
     font-weight: bold;
     color: #737373;
     font-size: 14px;
-    padding-left: 40px;
+    padding: 24px 0 24px 60px;
 }
 
 .attendance-detail__table td {
     color: #000;
     font-weight: bold;
     font-size: 16px;
-    padding-left: 60px;
+    padding: 24px 40px 24px 90px;
 }
 
 .attendance-detail__table input[type="time"] {
@@ -122,6 +124,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     border: 1px solid #E1E1E1;
     border-radius: 4px;
     box-sizing: border-box;
+    font-weight: bold;
 }
 
 .error-message {
@@ -136,7 +139,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .attendance-detail__notice {
-    color: #d32f2f;
+    color: #FF000080;
     font-weight: bold;
     font-size: 14px;
 }
