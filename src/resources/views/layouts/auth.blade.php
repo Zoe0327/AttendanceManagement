@@ -14,7 +14,7 @@
             <div class="auth-header-utilities">
                 {{-- ロゴ --}}
                 <a href="{{ route('login') }}" class="auth-header__logo">
-                    <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="auth-header__logo-img">
+                    <img src="{{ asset('images/CoachTech_White.png') }}" alt="COACHTECH" class="auth-header__logo-img">
                 </a>
             </div>
         </div>

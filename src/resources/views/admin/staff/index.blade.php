@@ -11,18 +11,18 @@
         <a href="{{ route('admin.attendance.staff', [
             'id' => $user->id,
             'month' => $month->copy()->subMonth()->format('Y-m')]) }}">
-            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="staff-list__left-arrow-img">
+            <img src="{{ asset('images/arrow.png') }}" alt="arrow" class="staff-list__left-arrow-img">
             前月
         </a>
         <span>
-            <img src="{{ asset('storage/item_images/calendar.png') }}" alt="calendar" class="staff-list__month-img">
+            <img src="{{ asset('images/calendar.png') }}" alt="calendar" class="staff-list__month-img">
             {{ $month->format('Y/m') }}
         </span>
         <a href="{{ route('admin.attendance.staff', [
             'id' =>$user->id,
             'month' => $month->copy()->addMonth()->format('Y-m')]) }}">
             翌月
-            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="staff-list__right-arrow-img">
+            <img src="{{ asset('images/arrow.png') }}" alt="arrow" class="staff-list__right-arrow-img">
         </a>
     </div>
     <table class="staff-table">

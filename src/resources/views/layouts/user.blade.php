@@ -15,7 +15,7 @@
             <div class="user-header-utilities">
                 {{-- ロゴ --}}
                 <a href="{{ route('user.attendance.list') }}" class="user-header__logo">
-                    <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="user-header__logo-img">
+                    <img src="{{ asset('images/CoachTech_White.png') }}" alt="COACHTECH" class="user-header__logo-img">
                 </a>
 
                 <div class="user-header__nav-wrap" id="js-nav-wrap">

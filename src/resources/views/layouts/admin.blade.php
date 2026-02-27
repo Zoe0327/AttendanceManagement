@@ -15,7 +15,7 @@
             <div class="admin-header-utilities">
                 {{-- ロゴ --}}
                 <a href="{{ route('admin.attendance.list') }}" class="admin-header__logo">
-                    <img src="{{ asset('storage/item_images/CoachTech_White.png') }}" alt="COACHTECH" class="admin-header__logo-img">
+                    <img src="{{ asset('images/CoachTech_White.png') }}" alt="COACHTECH" class="admin-header__logo-img">
                 </a>
                 <div class="admin-header__nav-wrap" id="js-nav-wrap">
                     <nav>

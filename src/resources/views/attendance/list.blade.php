@@ -9,16 +9,16 @@
 
     <div class="attendance-list__month">
         <a href="{{ route('user.attendance.list', ['month' => $currentMonth->copy()->subMonth()->format('Y-m')]) }}">
-            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__left-arrow-img">
+            <img src="{{ asset('images/arrow.png') }}" alt="arrow" class="attendance-list__left-arrow-img">
             前月
         </a>
         <span>
-            <img src="{{ asset('storage/item_images/calendar.png') }}" alt="calendar" class="attendance-list__month-img">
+            <img src="{{ asset('images/calendar.png') }}" alt="calendar" class="attendance-list__month-img">
             {{ $currentMonth->format('Y/m') }}
         </span>
         <a href="{{ route('user.attendance.list', ['month' => $currentMonth->copy()->addMonth()->format('Y-m')]) }}">
             翌月
-            <img src="{{ asset('storage/item_images/arrow.png') }}" alt="arrow" class="attendance-list__right-arrow-img">
+            <img src="{{ asset('images/arrow.png') }}" alt="arrow" class="attendance-list__right-arrow-img">
         </a>
     </div>
     <table class="attendance-table">
