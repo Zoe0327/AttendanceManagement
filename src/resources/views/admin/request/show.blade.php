@@ -16,8 +16,8 @@
                     <tbody>
                         <tr>
                             <th>名前</th>
-                            <td>
-                                {{ $request->attendance->user->name }}
+                            <td class="admin-request__show-name-cell">
+                                <span class="admin-request__show-name__user">{{ $request->attendance->user->name }}</span>
                             </td>
                         </tr>
                         <tr>

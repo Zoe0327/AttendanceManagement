@@ -29,18 +29,11 @@
 .attendance-detail__table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
-    margin: 0;
-    padding: 0;
 }
 
-.attendance-name-cell {
-    display: block;
-    margin-left: 0;
-}
 
 .attendance-name__user {
-    padding-left: 25px;
+    padding-left: 0;
 }
 
 .date-cell {
@@ -52,7 +45,7 @@
 .date-year {
     display: inline-block;
     width: 150px;
-    padding-left: 25px;
+    padding-left: 0;
 }
 
 .attendance-detail__table th,

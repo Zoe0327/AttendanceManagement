@@ -1,5 +1,5 @@
 .admin-request__show-detail {
-    max-width: 800px;
+    max-width: 900px;
     margin: 50px auto;
     padding: 40px;
 }
@@ -29,6 +29,24 @@
 .admin-request__show-detail__table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-request__show-name-cell {
+    display: block;
+    margin-left: 0;
+}
+
+.admin-request__show-name__user {
+    padding-left: 0;
+}
+
+.admin-request__show-date-cell {
+    display: flex;
+    gap: 0;
+    margin-left: 0;
 }
 
 .admin-request__show-date-cell {

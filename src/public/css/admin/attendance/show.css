@@ -40,7 +40,7 @@
 }
 
 .admin-name__user {
-    padding-left: 25px;
+    padding-left: 0;
 }
 
 .admin-date-cell {
@@ -52,7 +52,7 @@
 .admin-date-year {
     display: inline-block;
     width: 150px;
-    padding-left: 25px;
+    padding-left: 0;
 }
 
 .admin-attendance-detail__table th,
