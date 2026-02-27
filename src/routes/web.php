@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('user.attendance.index');
+    }
+    return redirect('/login');
+});
+
+
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CorrectionRequestController;
 
