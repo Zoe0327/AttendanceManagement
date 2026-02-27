@@ -15,7 +15,7 @@
             前月
         </a>
         <span>
-            <img src="{{ asset('storage/item_images/calender.png') }}" alt="calender" class="staff-list__month-img">
+            <img src="{{ asset('storage/item_images/calendar.png') }}" alt="calendar" class="staff-list__month-img">
             {{ $month->format('Y/m') }}
         </span>
         <a href="{{ route('admin.attendance.staff', [

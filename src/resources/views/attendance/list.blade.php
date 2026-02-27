@@ -13,7 +13,7 @@
             前月
         </a>
         <span>
-            <img src="{{ asset('storage/item_images/calender.png') }}" alt="calender" class="attendance-list__month-img">
+            <img src="{{ asset('storage/item_images/calendar.png') }}" alt="calendar" class="attendance-list__month-img">
             {{ $currentMonth->format('Y/m') }}
         </span>
         <a href="{{ route('user.attendance.list', ['month' => $currentMonth->copy()->addMonth()->format('Y-m')]) }}">

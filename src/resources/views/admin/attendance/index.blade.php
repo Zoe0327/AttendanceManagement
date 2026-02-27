@@ -13,7 +13,7 @@
             前日
         </a>
         <span>
-            <img src="{{ asset('images/calender.png') }}" alt="calender" class="admin-attendance-list__month-img">
+            <img src="{{ asset('images/calendar.png') }}" alt="calendar" class="admin-attendance-list__month-img">
             {{ $date->format('Y/m/d') }}
         </span>
         <a href="{{ route('admin.attendance.list', ['date' => $date->copy()->addDay()->toDateString()]) }}">
