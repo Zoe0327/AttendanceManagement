@@ -195,7 +195,9 @@ docker-compose exec mysql bash
 mysql -u root -p
 
 # パスワードは root
-create database test_database;
+create database demo_test;
+GRANT ALL PRIVILEGES ON demo_test.* TO 'laravel_user'@'%';
+FLUSH PRIVILEGES;
 
 ### テスト実行
 docker-compose exec php bash
